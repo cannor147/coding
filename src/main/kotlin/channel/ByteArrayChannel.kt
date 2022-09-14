@@ -8,7 +8,7 @@ import java.nio.ByteBuffer
 import java.nio.channels.ByteChannel
 import java.nio.channels.ClosedChannelException
 
-class ByteArrayChannel(private val affection: Affection<Byte>) : ByteChannel {
+open class ByteArrayChannel(private val affection: Affection<Byte>) : ByteChannel {
     private val outputStream = ByteArrayOutputStream()
     private var closed = false
     private var offset = 0
