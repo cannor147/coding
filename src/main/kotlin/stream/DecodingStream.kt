@@ -7,19 +7,21 @@ import coding.wrapCode
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
+import java.nio.channels.Channels
+import java.nio.channels.ReadableByteChannel
 import java.util.*
 
 class DecodingStream(
-    inputStream: InputStream,
+    byteChannel: ReadableByteChannel,
     private val decoder: Decoder<List<Byte>, List<Byte>>,
     private val coding: Coding<in List<Byte>>,
-) : FilterInputStream(inputStream) {
+) : FilterInputStream(Channels.newInputStream(byteChannel)) {
     private val buffer: Queue<Byte> = ArrayDeque()
 
-    constructor(inputStream: InputStream, decoder: Decoder<List<Byte>, List<Byte>>, codeSize: Int) :
-            this(inputStream, decoder, FixedCoding(codeSize))
-    constructor(inputStream: InputStream, decoder: Decoder<List<Byte>, Byte>) :
-            this(inputStream, wrapCode(decoder), 1)
+    constructor(byteChannel: ReadableByteChannel, decoder: Decoder<List<Byte>, List<Byte>>, codeSize: Int) :
+            this(byteChannel, decoder, FixedCoding(codeSize))
+    constructor(byteChannel: ReadableByteChannel, decoder: Decoder<List<Byte>, Byte>) :
+            this(byteChannel, wrapCode(decoder), 1)
 
     override fun read(): Int {
         while (buffer.isEmpty()) {
